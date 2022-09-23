@@ -1,0 +1,4 @@
+/mnt/d/University/5-sem/university-os-labs/Lab1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+/mnt/d/University/5-sem/university-os-labs/Lab1/cmake-build-debug/CMakeFiles/edit_cache.dir
+/mnt/d/University/5-sem/university-os-labs/Lab1/cmake-build-debug/CMakeFiles/lab1.dir
+/mnt/d/University/5-sem/university-os-labs/Lab1/cmake-build-debug/CMakeFiles/Lab1.dir

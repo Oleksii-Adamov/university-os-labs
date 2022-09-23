@@ -1,0 +1,1 @@
+/usr/bin/cc -g   CMakeFiles/Lab1Var5.dir/main.c.o  -o Lab1Var5 -Wl,-rpath,/mnt/d/University/5-sem/university-os-labs/Lab1/cmake-build-debug liblab1.so 
