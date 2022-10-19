@@ -14,7 +14,7 @@
 #define CF_T(prefix, typestr)	_CF_T(prefix, typestr)
 
 struct _func_attrs_base {
-	int  delay_tenths;
+    int  delay_tenths;
 };
 typedef struct _func_attrs_base func_attrs_base_t;
 
@@ -30,7 +30,7 @@ typedef struct _func_attrs_base func_attrs_base_t;
 		_CF_T(func_attrs, typestr) *f_attrs, *g_attrs;		\
 	} _CF_T(case, typestr)
 
-#define DEFINE_CASE_TYPES(typestr)	DEFINE_CASE_TYPES_FULL(typestr, typestr) 
+#define DEFINE_CASE_TYPES(typestr)	DEFINE_CASE_TYPES_FULL(typestr, typestr)
 
 DEFINE_CASE_TYPES(bool);
 DEFINE_CASE_TYPES(int);
@@ -40,17 +40,17 @@ DEFINE_CASE_TYPES_FULL(unsigned_int, unsigned int);
 static inline void computational_delay(func_attrs_base_t *delay)
 {
 #ifdef _WIN32
-	Sleep(delay? TENTHS_TO_MILLIS(delay->delay_tenths) : INFINITE);
+    Sleep(delay? TENTHS_TO_MILLIS(delay->delay_tenths) : INFINITE);
 #else
-	if (! delay)
-		pause();
-	else
-		usleep(TENTHS_TO_USECS(delay->delay_tenths));
+    if (! delay)
+        pause();
+    else
+        usleep(TENTHS_TO_USECS(delay->delay_tenths));
 #endif
 }
 
 bool index_inside_bounds(unsigned int index, unsigned int size) {
-	return index < size;
+    return index < size;
 }
 
 #define DEFINE_COMP_FUNC(name, op) 								\
@@ -73,13 +73,13 @@ bool index_inside_bounds(unsigned int index, unsigned int size) {
 			} 									\
 		} 										\
 		return COMPFUNC_HARD_FAIL;							\
-	}										
+	}
 
 
 #define _DEFINE_CASES_FULL(op, typestr) \
     	static _CF_T(case, typestr) cases_##op[]
 
-#define DEFINE_CASES_FULL(op, typestr)	_DEFINE_CASES_FULL(op, typestr)  
+#define DEFINE_CASES_FULL(op, typestr)	_DEFINE_CASES_FULL(op, typestr)
 #define DEFINE_CASES(op)		DEFINE_CASES_FULL(op, TYPESTR(op))
 
 #define NUMERIC_CASES_INIT(typestr) 											\
@@ -88,9 +88,9 @@ bool index_inside_bounds(unsigned int index, unsigned int size) {
 	}
 
 DEFINE_CASES(and) = {
-	    { .f_attrs = NULL,
-	      .g_attrs = & (CF_T(func_attrs, bool) ) { .delay.delay_tenths = 50, .result = & (CF_T(boxed, bool) ) { .value = false } },
-	    }
+        { .f_attrs = NULL,
+                .g_attrs = & (CF_T(func_attrs, bool) ) { .delay.delay_tenths = 50, .result = & (CF_T(boxed, bool) ) { .value = false } },
+        }
 };
 
 DEFINE_CASES(imul) = { NUMERIC_CASES_INIT(int) };
@@ -109,18 +109,18 @@ DEFINE_ALL_BUT_OR(f)
 DEFINE_ALL_BUT_OR(g)
 
 compfunc_status_t trial_f_or(int x, bool *valuep) {
-	compfunc_status_t status = trial_f_and(x, valuep);
-	if (status == COMPFUNC_SUCCESS)
-		*valuep = !*valuep;
+    compfunc_status_t status = trial_f_and(x, valuep);
+    if (status == COMPFUNC_SUCCESS)
+        *valuep = !*valuep;
 
-	return status;
+    return status;
 }
 
 compfunc_status_t trial_g_or(int x, bool *valuep) {
-	compfunc_status_t status = trial_g_and(x, valuep);
-	if (status == COMPFUNC_SUCCESS)
-		*valuep = !*valuep;
+    compfunc_status_t status = trial_g_and(x, valuep);
+    if (status == COMPFUNC_SUCCESS)
+        *valuep = !*valuep;
 
-	return status;
+    return status;
 }
 

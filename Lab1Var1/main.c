@@ -60,7 +60,7 @@ struct ProcessInfo start_process(int x, enum Func func) {
 
 int main() {
     //while (true) {
-    for (int x = -100; x < 100; x++) {
+    for (int x = 2; x < 100; x++) {
         bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
         TYPENAME_imin f, g;
         printf ("x = %d\n", x);

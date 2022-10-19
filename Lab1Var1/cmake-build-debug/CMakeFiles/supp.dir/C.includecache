@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/mnt/d/University/5-sem/university-os-labs/Lab1Var1/supplementary/trialfuncs.c
+stdbool.h
+-
+Windows.h
+-
+unistd.h
+-
+trialfuncs.h
+-
+stdlib.h
+-
+
