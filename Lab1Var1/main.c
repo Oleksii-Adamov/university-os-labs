@@ -3,9 +3,11 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
+#include <time.h>
 
 #define MAX_SOFT_FAIL_TRIES 10
 #define FUNC_RETURN_TYPE TYPENAME_imin
+#define USER_DIALOG_DURATION_MSEC 5000
 
 struct ProcessInfo {
     int id;
@@ -97,6 +99,8 @@ int main() {
     enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
     unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
     FUNC_RETURN_TYPE f, g;
+    bool user_dialog_active = false;
+    time_t user_dialog_start_sec;
 
     printf ("x = ");
     int x;
@@ -115,12 +119,22 @@ int main() {
     for (int i = 0; i < 3; i++) {
         pfds[i].events = POLLIN;
     }
-
     while (!(f_computed && g_computed) && !fail) {
-        int poll_ret = poll(pfds, 3, -1);
+        printf("Started cycle\n");
+        int poll_ret;
+        if (user_dialog_active) {
+            poll_ret = poll(pfds, 3, USER_DIALOG_DURATION_MSEC);
+        }
+        else {
+            poll_ret = poll(pfds, 3, -1);
+        }
         if (poll_ret == -1) {
             printf("Error: Poll error\n");
             exit(2);
+        }
+        if (poll_ret == 0) {
+            user_dialog_active = false;
+            printf("action is not confirmed within %d seconds proceeding...\n", USER_DIALOG_DURATION_MSEC / 1000);
         }
         if (poll_ret > 0) {
             // message from f process
@@ -135,13 +149,32 @@ int main() {
             if (pfds[0].revents & POLLIN) {
                 char buf[256];
                 read(pfds[0].fd, buf, sizeof(char) * 256);
-                if (buf[0] == '\n' && !(f_computed && g_computed)) {
-                    printf("Interrupted by user\n");
+                if (!user_dialog_active && buf[0] == '\n' && !(f_computed && g_computed)) {
+                    user_dialog_active = true;
+                    printf("Please confirm that computation should be stopped y(es, stop)/n(ot yet)\n");
+                    //user_dialog_start_sec = time(0);
+                    //printf("%ld\n", user_dialog_start_sec);
+                }
+                else if (user_dialog_active && buf[0] == 'y' && buf[1] == '\n') {
+                    user_dialog_active = false;
                     is_interrupted = true;
                     break;
                 }
+                else if (user_dialog_active && buf[0] == 'n' && buf[1] == '\n') {
+                    user_dialog_active = false;
+                }
             }
         }
+        // duration of user dialog expired
+//        printf("%ld ,%ld\n", time(0), time(0) - user_dialog_start_sec);
+//        if (user_dialog_active && (time(0) - user_dialog_start_sec) >= USER_DIALOG_DURATION) {
+//            user_dialog_active = false;
+//            printf("action is not confirmed within %d seconds proceeding...\n", USER_DIALOG_DURATION);
+//        }
+//        printf("Ended cycle\n");
+    }
+    if (user_dialog_active) {
+        printf("overriden by system\n");
     }
     if (!is_interrupted || (f_computed && g_computed) || fail) {
         printf("Result: ");

@@ -62,9 +62,7 @@ bool index_inside_bounds(unsigned int index, unsigned int size) {
         }\
         if (x == 2) {                      \
             srand(getpid());                 \
-            int r = rand();                 \
-            printf("rand: %d\n", r); \
-            if (r > RAND_MAX / 10) {   \
+            if (rand() > RAND_MAX / 10) {   \
                 return COMPFUNC_SOFT_FAIL;                               \
             }                               \
         }                                  \
