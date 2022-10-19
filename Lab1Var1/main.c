@@ -4,6 +4,9 @@
 #include <unistd.h>
 #include <poll.h>
 
+#define MAX_SOFT_FAIL_TRIES 10
+#define FUNC_RETURN_TYPE TYPENAME_imin
+
 struct ProcessInfo {
     int id;
     int read_fd;
@@ -58,118 +61,110 @@ struct ProcessInfo start_process(int x, enum Func func) {
     }
 }
 
+void receive(struct pollfd* pfd, FUNC_RETURN_TYPE* ret_val, enum Func func, int x, bool* computed, bool* fail, enum _compfunc_status* status,
+        unsigned int* remaining_soft_fail_tries) {
+    read((*pfd).fd, status, sizeof(enum _compfunc_status));
+    read((*pfd).fd, ret_val, sizeof(FUNC_RETURN_TYPE));
+    if (*status == COMPFUNC_HARD_FAIL) {
+        *fail = true;
+    }
+    else if (*status == COMPFUNC_SOFT_FAIL) {
+        if (*remaining_soft_fail_tries > 0) {
+            (*remaining_soft_fail_tries)--;
+            struct ProcessInfo process_info = start_process(x, func);
+            (*pfd).fd = process_info.read_fd;
+        }
+        else {
+            *fail = true;
+        }
+    }
+    else if (*status == COMPFUNC_SUCCESS) {
+        *computed = true;
+    }
+}
+
+char* print_status_info(enum _compfunc_status status, unsigned int soft_fail_tries) {
+    printf("%s", symbolic_status(status));
+    if (status == COMPFUNC_SOFT_FAIL) {
+        printf(" (%d/%d attempts)", MAX_SOFT_FAIL_TRIES - soft_fail_tries, MAX_SOFT_FAIL_TRIES);
+    }
+}
+
 int main() {
-    //while (true) {
-    for (int x = 2; x < 100; x++) {
-        bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
-        TYPENAME_imin f, g;
-        printf ("x = %d\n", x);
-        //printf ("x = ");
-        //int x;
-        //scanf("%d", &x);
+    srand(3);
 
-        // staring processes for computing f and g
-        struct ProcessInfo f_process_info = start_process(x, FUNC_F);
-        struct ProcessInfo g_process_info = start_process(x, FUNC_G);
+    bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
+    enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
+    unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
+    FUNC_RETURN_TYPE f, g;
 
-        // polling setup
-        struct pollfd pfds[3];
-        pfds[0].fd = 0; // stdin
-        pfds[1].fd = f_process_info.read_fd;
-        pfds[2].fd = g_process_info.read_fd;
-        for (int i = 0; i < 3; i++) {
-            pfds[i].events = POLLIN;
+    printf ("x = ");
+    int x;
+    scanf("%d", &x);
+
+    // staring processes for computing f and g
+    struct ProcessInfo f_process_info = start_process(x, FUNC_F);
+    struct ProcessInfo g_process_info = start_process(x, FUNC_G);
+
+    // polling setup
+    struct pollfd pfds[3];
+    // console input (stdin)
+    pfds[0].fd = 0;
+    pfds[1].fd = f_process_info.read_fd;
+    pfds[2].fd = g_process_info.read_fd;
+    for (int i = 0; i < 3; i++) {
+        pfds[i].events = POLLIN;
+    }
+
+    while (!(f_computed && g_computed) && !fail) {
+        int poll_ret = poll(pfds, 3, -1);
+        if (poll_ret == -1) {
+            printf("Error: Poll error\n");
+            exit(2);
         }
-
-        while (!(f_computed && g_computed)) {
-            int poll_ret = poll(pfds, 3, -1);
-            if (poll_ret == -1) {
-                printf("Error: Poll error\n");
-                exit(2);
+        if (poll_ret > 0) {
+            // message from f process
+            if (pfds[1].revents & POLLIN) {
+                receive(&pfds[1], &f, FUNC_F, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
             }
-            if (poll_ret > 0) {
-                if (pfds[1].revents & POLLIN) {
-                    enum _compfunc_status status;
-                    read(pfds[1].fd, &status, sizeof(enum _compfunc_status));
-                    read(pfds[1].fd, &f, sizeof(TYPENAME_imin));
-                    if (status == COMPFUNC_HARD_FAIL) {
-                        printf("f Hard Fail\n");
-                        fail = true;
-                        break;
-                    }
-                    else if (status == COMPFUNC_SOFT_FAIL) {
-                        printf("f Soft Fail\n");
-                        fail = true;
-                        break;
-                    }
-                    else if (status == COMPFUNC_SUCCESS) {
-                        printf("f = %d\n", f);
-                        f_computed = true;
-                    }
-                }
-                if (pfds[2].revents & POLLIN) {
-                    enum _compfunc_status status;
-                    read(pfds[2].fd, &status, sizeof(enum _compfunc_status));
-                    read(pfds[2].fd, &g, sizeof(int));
-                    if (status == COMPFUNC_HARD_FAIL) {
-                        printf("g Hard Fail\n");
-                        fail = true;
-                        break;
-                    }
-                    else if (status == COMPFUNC_SOFT_FAIL) {
-                        printf("g Soft Fail\n");
-                        fail = true;
-                        break;
-                    }
-                    else if (status == COMPFUNC_SUCCESS) {
-                        printf("g = %d\n", g);
-                        g_computed = true;
-                    }
-                }
-                if (pfds[0].revents & POLLIN) { // input from user
-                    char buf[256];
-                    read(pfds[0].fd, buf, sizeof(char) * 256);
-                    if (buf[0] == '\n' && !(f_computed && g_computed)) {
-                        printf("Interrupted by user\n");
-                        is_interrupted = true;
-                        break;
-                    }
-                }
+            // message from g process
+            if (pfds[2].revents & POLLIN) {
+                receive(&pfds[2], &g, FUNC_G, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
             }
-        }
-        if (!is_interrupted) {
-            printf("Result: ");
-            if (fail) {
-                printf("fail\n\n");
-            } else {
-                unsigned int result = (f < g) ? f : g;
-                printf("%d\n\n", result);
+            // input from user
+            if (pfds[0].revents & POLLIN) {
+                char buf[256];
+                read(pfds[0].fd, buf, sizeof(char) * 256);
+                if (buf[0] == '\n' && !(f_computed && g_computed)) {
+                    printf("Interrupted by user\n");
+                    is_interrupted = true;
+                    break;
+                }
             }
         }
     }
-    /*printf("Hello world\n");
-
-    compfunc_status_t status;
-    double fresult;
-    int iresult;
-    printf ("f(0) and g(0): \n");
-    status = trial_f_imul(0, &iresult);
-    printf ("f_imul(0): %s\n", symbolic_status(status));
-    if (status == COMPFUNC_SUCCESS)
-        printf ("f_imul(0): %d\n", iresult);
-    printf ("f(0): %d\n", trial_f_imul(0, &iresult));
-    PROCESS_FUNC(f, imul, 0);
-    printf ("g(0): %d\n", trial_g_imul(0, &iresult));
-    PROCESS_FUNC(g, imul, 0);
-    printf ("g(1): %d\n", trial_g_imul(1, &iresult));
-    PROCESS_FUNC(g, imul, 1);
-    printf ("f(2): %d\n", trial_f_imul(2, &iresult));
-    PROCESS_FUNC(f, imul, 2);
-    printf ("g(3): %d\n", trial_g_imul(3, &iresult));
-    PROCESS_FUNC(g, imul, 3);
-
-    PROCESS_FUNC(g, or, -1);
-    PROCESS_FUNC(g, or, 0);
-    PROCESS_FUNC(g, imin, 0);*/
+    if (!is_interrupted || (f_computed && g_computed) || fail) {
+        printf("Result: ");
+        if (fail) {
+            printf("Fail ( f: ");
+            print_status_info(f_status, f_soft_fail_tries);
+            printf(", g: ");
+            print_status_info(g_status, g_soft_fail_tries);
+            printf(" )\n\n");
+            //printf("Fail ( f: %s, g: %s\n\n", symbolic_status(f_status), symbolic_status(g_status));
+            //printf("Fail ( f: ", symbolic_status(f_status), " g: ", symbolic_status(g_status), " )");
+        } else {
+            FUNC_RETURN_TYPE result = (f < g) ? f : g;
+            printf("%d\n\n", result);
+        }
+    }
+    else {
+        printf("Canceled by user\n");
+        printf("f: ");
+        print_status_info(f_status, f_soft_fail_tries);
+        printf("\ng: ");
+        print_status_info(g_status, g_soft_fail_tries);
+        printf("\n\n");
+    }
     return 0;
 }
