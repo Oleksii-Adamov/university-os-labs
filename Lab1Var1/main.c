@@ -3,11 +3,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <poll.h>
-#include <time.h>
+#include <pthread.h>
 
 #define MAX_SOFT_FAIL_TRIES 10
 #define FUNC_RETURN_TYPE TYPENAME_imin
 #define USER_DIALOG_DURATION_MSEC 5000
+#define READ_BUFF_FROM_COMSOLE_SIZE 256
+#define USER_INTERACTION_LATENCY_MSEC 100
 
 struct ProcessInfo {
     int id;
@@ -92,91 +94,125 @@ char* print_status_info(enum _compfunc_status status, unsigned int soft_fail_tri
     }
 }
 
-int main() {
-    srand(3);
+bool gl_user_dialog_active = false;
+bool gl_interrupted_by_user = false;
+pthread_rwlock_t gl_user_dialog_active_rwlock;
+pthread_rwlock_t gl_interrupted_by_user_rwlock;
 
-    bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
-    enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
-    unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
-    FUNC_RETURN_TYPE f, g;
-    bool user_dialog_active = false;
-    time_t user_dialog_start_sec;
+bool is_interrupted_by_user() {
+    pthread_rwlock_rdlock(&gl_interrupted_by_user_rwlock);
+    bool ret = gl_interrupted_by_user;
+    pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
+    return ret;
+}
 
-    printf ("x = ");
-    int x;
-    scanf("%d", &x);
+bool is_user_dialog_active() {
+    pthread_rwlock_rdlock(&gl_user_dialog_active_rwlock);
+    bool ret = gl_user_dialog_active;
+    pthread_rwlock_unlock(&gl_user_dialog_active_rwlock);
+    return ret;
+}
 
-    // staring processes for computing f and g
-    struct ProcessInfo f_process_info = start_process(x, FUNC_F);
-    struct ProcessInfo g_process_info = start_process(x, FUNC_G);
-
-    // polling setup
-    struct pollfd pfds[3];
-    // console input (stdin)
-    pfds[0].fd = 0;
-    pfds[1].fd = f_process_info.read_fd;
-    pfds[2].fd = g_process_info.read_fd;
-    for (int i = 0; i < 3; i++) {
-        pfds[i].events = POLLIN;
-    }
-    while (!(f_computed && g_computed) && !fail) {
-        printf("Started cycle\n");
+void* user_interaction() {
+    char buf[READ_BUFF_FROM_COMSOLE_SIZE];
+    printf("To cancel computation press Enter\n");
+    // polling console input (stdin)
+    struct pollfd pfd;
+    pfd.fd = 0;
+    pfd.events = POLLIN;
+    while (!gl_interrupted_by_user) {
         int poll_ret;
-        if (user_dialog_active) {
-            poll_ret = poll(pfds, 3, USER_DIALOG_DURATION_MSEC);
+        if (gl_user_dialog_active) {
+            poll_ret = poll(&pfd, 1, USER_DIALOG_DURATION_MSEC);
         }
         else {
-            poll_ret = poll(pfds, 3, -1);
+            poll_ret = poll(&pfd, 1, -1);
         }
         if (poll_ret == -1) {
             printf("Error: Poll error\n");
             exit(2);
         }
         if (poll_ret == 0) {
-            user_dialog_active = false;
+            gl_user_dialog_active = false;
             printf("action is not confirmed within %d seconds proceeding...\n", USER_DIALOG_DURATION_MSEC / 1000);
         }
         if (poll_ret > 0) {
+            read(pfd.fd, buf, sizeof(char) * READ_BUFF_FROM_COMSOLE_SIZE);
+            if (gl_user_dialog_active && buf[0] == 'y' && buf[1] == '\n') {
+                gl_user_dialog_active = false;
+                gl_interrupted_by_user = true;
+            }
+            else if (gl_user_dialog_active && buf[0] == 'n' && buf[1] == '\n') {
+                gl_user_dialog_active = false;
+                printf("proceeding...");
+            }
+            else if (!gl_user_dialog_active && buf[0] == '\n') {
+                gl_user_dialog_active = true;
+                printf("Please confirm that computation should be stopped y(es, stop)/n(ot yet)\n");
+            }
+            else {
+                printf("Wrong command\n");
+            }
+        }
+    }
+    return NULL;
+}
+
+int main() {
+    // variables initialization
+    bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
+    enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
+    unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
+    FUNC_RETURN_TYPE f, g;
+
+    // input
+    printf("x = ");
+    int x;
+    scanf("%d", &x);
+
+    // mutexes initialization
+    pthread_rwlock_init(&gl_user_dialog_active_rwlock, NULL);
+    pthread_rwlock_init(&gl_interrupted_by_user_rwlock, NULL);
+
+    // creating thread for user interaction (cancellation)
+    pthread_t interaction_thread;
+    if(pthread_create(&interaction_thread, NULL, &user_interaction, NULL) != 0) {
+        printf("Error: Cannot create a thread\n");
+        exit(3);
+    }
+
+    // staring processes for computing f and g
+    struct ProcessInfo f_process_info = start_process(x, FUNC_F);
+    struct ProcessInfo g_process_info = start_process(x, FUNC_G);
+
+    // polling setup
+    struct pollfd pfds[2];
+    pfds[0].fd = f_process_info.read_fd;
+    pfds[1].fd = g_process_info.read_fd;
+    for (int i = 0; i < 2; i++) {
+        pfds[i].events = POLLIN;
+    }
+    while (!(f_computed && g_computed) && !fail && !gl_interrupted_by_user) {
+        int poll_ret = poll(pfds, 2, USER_INTERACTION_LATENCY_MSEC);
+        if (poll_ret == -1) {
+            printf("Error: Poll error\n");
+            exit(2);
+        }
+        if (poll_ret > 0) {
             // message from f process
-            if (pfds[1].revents & POLLIN) {
+            if (pfds[0].revents & POLLIN) {
                 receive(&pfds[1], &f, FUNC_F, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
             }
             // message from g process
-            if (pfds[2].revents & POLLIN) {
+            if (pfds[1].revents & POLLIN) {
                 receive(&pfds[2], &g, FUNC_G, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
             }
-            // input from user
-            if (pfds[0].revents & POLLIN) {
-                char buf[256];
-                read(pfds[0].fd, buf, sizeof(char) * 256);
-                if (!user_dialog_active && buf[0] == '\n' && !(f_computed && g_computed)) {
-                    user_dialog_active = true;
-                    printf("Please confirm that computation should be stopped y(es, stop)/n(ot yet)\n");
-                    //user_dialog_start_sec = time(0);
-                    //printf("%ld\n", user_dialog_start_sec);
-                }
-                else if (user_dialog_active && buf[0] == 'y' && buf[1] == '\n') {
-                    user_dialog_active = false;
-                    is_interrupted = true;
-                    break;
-                }
-                else if (user_dialog_active && buf[0] == 'n' && buf[1] == '\n') {
-                    user_dialog_active = false;
-                }
-            }
         }
-        // duration of user dialog expired
-//        printf("%ld ,%ld\n", time(0), time(0) - user_dialog_start_sec);
-//        if (user_dialog_active && (time(0) - user_dialog_start_sec) >= USER_DIALOG_DURATION) {
-//            user_dialog_active = false;
-//            printf("action is not confirmed within %d seconds proceeding...\n", USER_DIALOG_DURATION);
-//        }
-//        printf("Ended cycle\n");
     }
-    if (user_dialog_active) {
+    if (gl_user_dialog_active) {
         printf("overriden by system\n");
     }
-    if (!is_interrupted || (f_computed && g_computed) || fail) {
+    if ((f_computed && g_computed) || fail) {
         printf("Result: ");
         if (fail) {
             printf("Fail ( f: ");
@@ -184,8 +220,6 @@ int main() {
             printf(", g: ");
             print_status_info(g_status, g_soft_fail_tries);
             printf(" )\n\n");
-            //printf("Fail ( f: %s, g: %s\n\n", symbolic_status(f_status), symbolic_status(g_status));
-            //printf("Fail ( f: ", symbolic_status(f_status), " g: ", symbolic_status(g_status), " )");
         } else {
             FUNC_RETURN_TYPE result = (f < g) ? f : g;
             printf("%d\n\n", result);
@@ -199,5 +233,10 @@ int main() {
         print_status_info(g_status, g_soft_fail_tries);
         printf("\n\n");
     }
+
+    // destroying mutexes
+    pthread_rwlock_destroy(&gl_user_dialog_active_rwlock);
+    pthread_rwlock_destroy(&gl_interrupted_by_user_rwlock);
+
     return 0;
 }

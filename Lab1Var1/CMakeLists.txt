@@ -27,3 +27,5 @@ target_include_directories(Lab1Var1 PUBLIC
         )
 
 target_link_libraries(Lab1Var1 PUBLIC supp)
+
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pthread")

@@ -1,1 +1,1 @@
-/usr/bin/cc -fPIC -g  -shared -Wl,-soname,libsupp.so -o libsupp.so CMakeFiles/supp.dir/supplementary/trialfuncs.c.o 
+/usr/bin/cc -fPIC  -pthread -g  -shared -Wl,-soname,libsupp.so -o libsupp.so CMakeFiles/supp.dir/supplementary/trialfuncs.c.o 

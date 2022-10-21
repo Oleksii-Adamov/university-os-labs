@@ -1,1 +1,1 @@
-/usr/bin/cc -g   CMakeFiles/Lab1Var1.dir/main.c.o  -o Lab1Var1 -Wl,-rpath,/mnt/d/University/5-sem/university-os-labs/Lab1Var1/cmake-build-debug libsupp.so 
+/usr/bin/cc  -pthread -g   CMakeFiles/Lab1Var1.dir/main.c.o  -o Lab1Var1 -Wl,-rpath,/mnt/d/University/5-sem/university-os-labs/Lab1Var1/cmake-build-debug libsupp.so 
