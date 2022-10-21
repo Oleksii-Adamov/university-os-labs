@@ -21,6 +21,6 @@ pthread.h
 -
 signal.h
 -
-sys/wait.h
+string.h
 -
 

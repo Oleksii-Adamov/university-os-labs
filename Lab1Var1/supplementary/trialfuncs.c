@@ -61,10 +61,15 @@ bool index_inside_bounds(unsigned int index, unsigned int size) {
             }\
         }\
         if (x == 2) {                      \
-            srand(getpid());                 \
-            if (rand() > RAND_MAX / 10) {   \
+            srand(getpid());               \
+            sleep(1);                      \
+            if (rand() > RAND_MAX / 5) {   \
                 return COMPFUNC_SOFT_FAIL;                               \
-            }                               \
+            }                              \
+            else {                         \
+                *valuep = (TYPE(op)) 1;    \
+                return COMPFUNC_SUCCESS;                          \
+            }\
         }                                  \
 		if (index_inside_bounds(x, sizeof cases_##op / sizeof cases_##op[0])) {		\
 			computational_delay(& cases_##op[x].name##_attrs->delay);		\

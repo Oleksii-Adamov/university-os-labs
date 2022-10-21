@@ -5,16 +5,18 @@
 #include <poll.h>
 #include <pthread.h>
 #include <signal.h>
-#include <sys/wait.h>
+#include <string.h>
 
-#define MAX_SOFT_FAIL_TRIES 10
+#define MAX_SOFT_FAIL_TRIES 5
 #define FUNC_RETURN_TYPE TYPENAME_imin
 #define USER_DIALOG_DURATION_MSEC 5000
-#define READ_BUFF_FROM_COMSOLE_SIZE 256
+#define READ_BUFF_FROM_CONSOLE_SIZE 256
 #define USER_INTERACTION_LATENCY_MSEC 100
 
 struct ProcessInfo {
+    // process id
     int id;
+    // read and write end of pipe
     int read_fd;
     int write_fd;
 };
@@ -24,12 +26,14 @@ enum Func {
     FUNC_G
 };
 
+// function to start computation of function f or g in different process
 struct ProcessInfo start_process(int x, enum Func func) {
     struct ProcessInfo process_info;
     // creating pipe
     int fd[2];
     if (pipe(fd) == -1) {
         printf("Error: Cannot open a pipe\n");
+        perror("");
         exit(2);
     }
     process_info.read_fd = fd[0];
@@ -67,8 +71,9 @@ struct ProcessInfo start_process(int x, enum Func func) {
     }
 }
 
-void receive(struct pollfd* pfd, FUNC_RETURN_TYPE* ret_val, enum Func func, int x, bool* computed, bool* fail, enum _compfunc_status* status,
-        unsigned int* remaining_soft_fail_tries) {
+// receive status and value of computation from pipe, and change variables according to outcome
+void receive(struct pollfd* pfd, FUNC_RETURN_TYPE* ret_val, enum Func func, struct ProcessInfo process_info, int x,
+        bool* computed, bool* fail, enum _compfunc_status* status, unsigned int* remaining_soft_fail_tries) {
     read((*pfd).fd, status, sizeof(enum _compfunc_status));
     read((*pfd).fd, ret_val, sizeof(FUNC_RETURN_TYPE));
     if (*status == COMPFUNC_HARD_FAIL) {
@@ -77,7 +82,8 @@ void receive(struct pollfd* pfd, FUNC_RETURN_TYPE* ret_val, enum Func func, int 
     else if (*status == COMPFUNC_SOFT_FAIL) {
         if (*remaining_soft_fail_tries > 0) {
             (*remaining_soft_fail_tries)--;
-            struct ProcessInfo process_info = start_process(x, func);
+            close(process_info.read_fd);
+            process_info = start_process(x, func);
             (*pfd).fd = process_info.read_fd;
         }
         else {
@@ -93,6 +99,9 @@ void print_func_res_info(enum _compfunc_status status, FUNC_RETURN_TYPE val, uns
     if (status == COMPFUNC_SUCCESS) {
         printf("%d", val);
     }
+    else if (status == COMPFUNC_STATUS_MAX) {
+        printf("%s", "didn't finish");
+    }
     else {
         printf("%s", symbolic_status(status));
     }
@@ -101,6 +110,7 @@ void print_func_res_info(enum _compfunc_status status, FUNC_RETURN_TYPE val, uns
     }
 }
 
+// global variables for communication between main and user interaction threads
 bool gl_user_dialog_active = false;
 bool gl_interrupted_by_user = false;
 pthread_rwlock_t gl_interrupted_by_user_rwlock;
@@ -115,7 +125,7 @@ bool is_interrupted_by_user() {
 }
 
 void* user_interaction() {
-    char buf[READ_BUFF_FROM_COMSOLE_SIZE];
+    char buf[READ_BUFF_FROM_CONSOLE_SIZE];
     printf("To cancel computation press Enter\n");
     // polling console input (stdin)
     struct pollfd pfd;
@@ -138,7 +148,7 @@ void* user_interaction() {
             printf("action is not confirmed within %d seconds proceeding...\n", USER_DIALOG_DURATION_MSEC / 1000);
         }
         if (poll_ret > 0) {
-            read(pfd.fd, buf, sizeof(char) * READ_BUFF_FROM_COMSOLE_SIZE);
+            read(pfd.fd, buf, sizeof(char) * READ_BUFF_FROM_CONSOLE_SIZE);
             // locking write lock
             pthread_rwlock_wrlock(&gl_interrupted_by_user_rwlock);
             if (gl_user_dialog_active && buf[0] == 'y' && buf[1] == '\n') {
@@ -163,122 +173,156 @@ void* user_interaction() {
     return NULL;
 }
 
-int main() {
-    // variables initialization
-    bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
-    enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
-    unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
-    FUNC_RETURN_TYPE f, g;
-
-    // input
-    printf("x = ");
-    int x;
-    scanf("%d", &x);
-
-    // mutex initialization
-    pthread_rwlock_init(&gl_interrupted_by_user_rwlock, NULL);
-
-    // creating thread for user interaction (cancellation)
-    pthread_t user_interaction_thread;
-    if(pthread_create(&user_interaction_thread, NULL, &user_interaction, NULL) != 0) {
-        printf("Error: Cannot create a thread\n");
-        exit(3);
-    }
-
-    // staring processes for computing f and g
-    struct ProcessInfo f_process_info = start_process(x, FUNC_F);
-    struct ProcessInfo g_process_info = start_process(x, FUNC_G);
-
-    // polling setup
-    struct pollfd pfds[2];
-    pfds[0].fd = f_process_info.read_fd;
-    pfds[1].fd = g_process_info.read_fd;
-    for (int i = 0; i < 2; i++) {
-        pfds[i].events = POLLIN;
-    }
-
-    while (!(f_computed && g_computed) && !fail && !is_interrupted_by_user()) {
-        int poll_ret = poll(pfds, 2, USER_INTERACTION_LATENCY_MSEC);
-        if (poll_ret == -1) {
-            printf("Error: Poll error\n");
-            exit(2);
-        }
-        if (poll_ret > 0) {
-            // message from f process
-            if (pfds[0].revents & POLLIN) {
-                receive(&pfds[0], &f, FUNC_F, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
-            }
-            // message from g process
-            if (pfds[1].revents & POLLIN) {
-                receive(&pfds[1], &g, FUNC_G, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
-            }
-        }
-    }
-
-    if (gl_user_dialog_active) {
-        printf("overriden by system\n");
-    }
-
-    if (kill(f_process_info.id, SIGTERM) != 0) {
-        printf("Error: Cannot kill process f\n");
-        exit(5);
-    }
-    if (kill(g_process_info.id, SIGTERM) != 0) {
-        printf("Error: Cannot kill process g\n");
-        exit(5);
-    }
-    if (waitpid(f_process_info.id, NULL, 0) == -1) {
-        printf("Error: waitpid f\n");
-        exit(5);
-    }
-    if (waitpid(g_process_info.id, NULL, 0) == -1) {
-        printf("Error: waitpid g\n");
-        exit(5);
-    }
-
-    if ((f_computed && g_computed) || fail) {
-        // locking, because thread cannot terminate while this lock is locked
-        pthread_rwlock_wrlock(&gl_interrupted_by_user_rwlock);
-        if (!gl_interrupted_by_user) {
-            // canceling user interaction thread
-            int errn = pthread_cancel(user_interaction_thread);
-            if (errn != 0) {
-                printf("Error: Cannot cancel thread\n");
-                exit(4);
-            }
-            if (pthread_join(user_interaction_thread, NULL) != 0) {
-                printf("Error: Cannot join thread\n");
-                exit(4);
-            }
-            printf("thread cancel point\n");
-            sleep(3);
-        }
-        pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
-
-        printf("Result: ");
-        if (fail) {
-            printf("Fail ( f: ");
-            print_func_res_info(f_status, f, f_soft_fail_tries);
-            printf(", g: ");
-            print_func_res_info(g_status, g, g_soft_fail_tries);
-            printf(" )\n\n");
+// asking user to enter x, checking if x is integer and in bound of int, if not - ask again
+void query_x(int* x) {
+    bool input_not_number = true;
+    while (input_not_number) {
+        input_not_number = false;
+        printf("x = ");
+        char buf[READ_BUFF_FROM_CONSOLE_SIZE];
+        scanf("%s", buf);
+        // atoi return 0 on error, so needed to check 0 input manually
+        if (strcmp(buf, "0\0") == 0) {
+            *x = 0;
         }
         else {
-            FUNC_RETURN_TYPE result = (f < g) ? f : g;
-            printf("%d\n\n", result);
+            *x = atoi(buf);
+            if (*x == 0) {
+                printf("x must be an integer (type int)\n");
+                input_not_number = true;
+            }
         }
     }
-    else {
-        printf("Canceled by user\n");
-        printf("f: ");
-        print_func_res_info(f_status, f, f_soft_fail_tries);
-        printf("\ng: ");
-        print_func_res_info(g_status, g, g_soft_fail_tries);
-        printf("\n\n");
-    }
+}
 
-    // destroying mutex
-    pthread_rwlock_destroy(&gl_interrupted_by_user_rwlock);
+int main() {
+    // loop for different x entered by user
+    bool user_wants_to_continue = true;
+    while (user_wants_to_continue) {
+        // variables initialization
+        gl_user_dialog_active = false;
+        gl_interrupted_by_user = false;
+        bool f_computed = false, g_computed = false, fail = false, is_interrupted = false;
+        enum _compfunc_status f_status = COMPFUNC_STATUS_MAX, g_status = COMPFUNC_STATUS_MAX;
+        unsigned int f_soft_fail_tries = MAX_SOFT_FAIL_TRIES, g_soft_fail_tries = MAX_SOFT_FAIL_TRIES;
+        FUNC_RETURN_TYPE f, g;
+
+        // input
+        int x;
+        query_x(&x);
+
+        // mutex initialization
+        pthread_rwlock_init(&gl_interrupted_by_user_rwlock, NULL);
+
+        // creating thread for user interaction (cancellation)
+        pthread_t user_interaction_thread;
+        if (pthread_create(&user_interaction_thread, NULL, &user_interaction, NULL) != 0) {
+            printf("Error: Cannot create a thread\n");
+            exit(3);
+        }
+
+        // staring processes for computing f and g
+        struct ProcessInfo f_process_info = start_process(x, FUNC_F);
+        struct ProcessInfo g_process_info = start_process(x, FUNC_G);
+
+        // polling setup
+        struct pollfd pfds[2];
+        pfds[0].fd = f_process_info.read_fd;
+        pfds[1].fd = g_process_info.read_fd;
+        for (int i = 0; i < 2; i++) {
+            pfds[i].events = POLLIN;
+        }
+
+        // polling computation processes with timeout to check if user wished to cancel
+        while (!(f_computed && g_computed) && !fail && !is_interrupted_by_user()) {
+            int poll_ret = poll(pfds, 2, USER_INTERACTION_LATENCY_MSEC);
+            if (poll_ret == -1) {
+                printf("Error: Poll error\n");
+                exit(2);
+            }
+            if (poll_ret > 0) {
+                // message from f process
+                if (pfds[0].revents & POLLIN) {
+                    receive(&pfds[0], &f, FUNC_F, f_process_info, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
+                }
+                // message from g process
+                if (pfds[1].revents & POLLIN) {
+                    receive(&pfds[1], &g, FUNC_G, g_process_info, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
+                }
+            }
+        }
+
+        // terminating processes
+        if (kill(f_process_info.id, SIGTERM) != 0) {
+            printf("Error: Cannot kill process f\n");
+            exit(5);
+        }
+        if (kill(g_process_info.id, SIGTERM) != 0) {
+            printf("Error: Cannot kill process g\n");
+            exit(5);
+        }
+
+        if ((f_computed && g_computed) || fail) {
+            // locking, because thread cannot terminate while this lock is locked
+            pthread_rwlock_wrlock(&gl_interrupted_by_user_rwlock);
+            if (!gl_interrupted_by_user) {
+                if (gl_user_dialog_active) {
+                    printf("overriden by system\n");
+                }
+                // canceling user interaction thread
+                if (pthread_cancel(user_interaction_thread) != 0) {
+                    printf("Error: Cannot cancel thread\n");
+                    exit(4);
+                }
+                if (pthread_join(user_interaction_thread, NULL) != 0) {
+                    printf("Error: Cannot join thread\n");
+                    exit(4);
+                }
+            }
+            pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
+
+            // printing result
+            printf("Result: ");
+            if (fail) {
+                printf("Fail ( f: ");
+                print_func_res_info(f_status, f, f_soft_fail_tries);
+                printf(", g: ");
+                print_func_res_info(g_status, g, g_soft_fail_tries);
+                printf(" )\n\n");
+            } else {
+                FUNC_RETURN_TYPE result = (f < g) ? f : g;
+                printf("%d\n\n", result);
+            }
+        } else {
+            printf("Canceled by user\n");
+            printf("f: ");
+            print_func_res_info(f_status, f, f_soft_fail_tries);
+            printf("\ng: ");
+            print_func_res_info(g_status, g, g_soft_fail_tries);
+            printf("\n\n");
+        }
+
+        // destroying mutex
+        pthread_rwlock_destroy(&gl_interrupted_by_user_rwlock);
+
+        // asking user if he wishes to continue
+        printf("Do you wish to continue? y(es)/n(o)\n");
+        bool user_dialog_active = true;
+        while (user_dialog_active) {
+            char buf[READ_BUFF_FROM_CONSOLE_SIZE];
+            read(0, buf, sizeof(char) * READ_BUFF_FROM_CONSOLE_SIZE);
+            if (buf[0] == 'y' && buf[1] == '\n') {
+                user_dialog_active = false;
+            }
+            else if (buf[0] == 'n' && buf[1] == '\n') {
+                user_dialog_active = false;
+                user_wants_to_continue = false;
+            }
+            else {
+                printf("Wrong command\n");
+            }
+        }
+    }
 
     return 0;
 }
