@@ -165,6 +165,9 @@ void* user_interaction() {
             pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
         }
     }
+    while(true) {
+        printf("Thread still running\n");
+    }
     return NULL;
 }
 
@@ -185,8 +188,8 @@ int main() {
     pthread_rwlock_init(&gl_interrupted_by_user_rwlock, NULL);
 
     // creating thread for user interaction (cancellation)
-    pthread_t interaction_thread;
-    if(pthread_create(&interaction_thread, NULL, &user_interaction, NULL) != 0) {
+    pthread_t user_interaction_thread;
+    if(pthread_create(&user_interaction_thread, NULL, &user_interaction, NULL) != 0) {
         printf("Error: Cannot create a thread\n");
         exit(3);
     }
@@ -219,6 +222,14 @@ int main() {
             }
         }
     }
+    if (pthread_cancel(user_interaction_thread) != 0) {
+        printf("Error: Cannot cancel thread");
+    }
+    if (pthread_join(user_interaction_thread, NULL) != 0) {
+        printf("Error: Cannot join thread");
+    }
+    printf("Cancellation point\n");
+    sleep(3);
     if (is_user_dialog_active()) {
         printf("overriden by system\n");
     }
@@ -230,7 +241,8 @@ int main() {
             printf(", g: ");
             print_status_info(g_status, g_soft_fail_tries);
             printf(" )\n\n");
-        } else {
+        }
+        else {
             FUNC_RETURN_TYPE result = (f < g) ? f : g;
             printf("%d\n\n", result);
         }
