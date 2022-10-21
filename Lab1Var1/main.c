@@ -254,11 +254,11 @@ int main() {
 
         // terminating processes
         if (kill(f_process_info.id, SIGTERM) != 0) {
-            printf("Error: Cannot kill process f\n");
+            printf("Error: Cannot terminate process f\n");
             exit(5);
         }
         if (kill(g_process_info.id, SIGTERM) != 0) {
-            printf("Error: Cannot kill process g\n");
+            printf("Error: Cannot terminate process g\n");
             exit(5);
         }
 
