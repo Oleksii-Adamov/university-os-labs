@@ -4,6 +4,8 @@
 #include <unistd.h>
 #include <poll.h>
 #include <pthread.h>
+#include <signal.h>
+#include <sys/wait.h>
 
 #define MAX_SOFT_FAIL_TRIES 10
 #define FUNC_RETURN_TYPE TYPENAME_imin
@@ -44,7 +46,7 @@ struct ProcessInfo start_process(int x, enum Func func) {
         close(process_info.read_fd);
         // calling function f or g
         enum _compfunc_status status;
-        TYPENAME_imin result = 0;
+        FUNC_RETURN_TYPE result;
         if (func == FUNC_F) {
             status = trial_f_imin(x, &result);
         }
@@ -87,8 +89,13 @@ void receive(struct pollfd* pfd, FUNC_RETURN_TYPE* ret_val, enum Func func, int 
     }
 }
 
-char* print_status_info(enum _compfunc_status status, unsigned int soft_fail_tries) {
-    printf("%s", symbolic_status(status));
+void print_func_res_info(enum _compfunc_status status, FUNC_RETURN_TYPE val, unsigned int soft_fail_tries) {
+    if (status == COMPFUNC_SUCCESS) {
+        printf("%d", val);
+    }
+    else {
+        printf("%s", symbolic_status(status));
+    }
     if (status == COMPFUNC_SOFT_FAIL) {
         printf(" (%d/%d attempts)", MAX_SOFT_FAIL_TRIES - soft_fail_tries, MAX_SOFT_FAIL_TRIES);
     }
@@ -153,9 +160,6 @@ void* user_interaction() {
             pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
         }
     }
-    while(true) {
-        printf("Thread still running\n");
-    }
     return NULL;
 }
 
@@ -192,6 +196,7 @@ int main() {
     for (int i = 0; i < 2; i++) {
         pfds[i].events = POLLIN;
     }
+
     while (!(f_computed && g_computed) && !fail && !is_interrupted_by_user()) {
         int poll_ret = poll(pfds, 2, USER_INTERACTION_LATENCY_MSEC);
         if (poll_ret == -1) {
@@ -201,32 +206,61 @@ int main() {
         if (poll_ret > 0) {
             // message from f process
             if (pfds[0].revents & POLLIN) {
-                receive(&pfds[1], &f, FUNC_F, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
+                receive(&pfds[0], &f, FUNC_F, x, &f_computed, &fail, &f_status, &f_soft_fail_tries);
             }
             // message from g process
             if (pfds[1].revents & POLLIN) {
-                receive(&pfds[2], &g, FUNC_G, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
+                receive(&pfds[1], &g, FUNC_G, x, &g_computed, &fail, &g_status, &g_soft_fail_tries);
             }
         }
     }
-    if (pthread_cancel(user_interaction_thread) != 0) {
-        printf("Error: Cannot cancel thread");
-    }
-    if (pthread_join(user_interaction_thread, NULL) != 0) {
-        printf("Error: Cannot join thread");
-    }
-    printf("Cancellation point\n");
-    sleep(3);
+
     if (gl_user_dialog_active) {
         printf("overriden by system\n");
     }
+
+    if (kill(f_process_info.id, SIGTERM) != 0) {
+        printf("Error: Cannot kill process f\n");
+        exit(5);
+    }
+    if (kill(g_process_info.id, SIGTERM) != 0) {
+        printf("Error: Cannot kill process g\n");
+        exit(5);
+    }
+    if (waitpid(f_process_info.id, NULL, 0) == -1) {
+        printf("Error: waitpid f\n");
+        exit(5);
+    }
+    if (waitpid(g_process_info.id, NULL, 0) == -1) {
+        printf("Error: waitpid g\n");
+        exit(5);
+    }
+
     if ((f_computed && g_computed) || fail) {
+        // locking, because thread cannot terminate while this lock is locked
+        pthread_rwlock_wrlock(&gl_interrupted_by_user_rwlock);
+        if (!gl_interrupted_by_user) {
+            // canceling user interaction thread
+            int errn = pthread_cancel(user_interaction_thread);
+            if (errn != 0) {
+                printf("Error: Cannot cancel thread\n");
+                exit(4);
+            }
+            if (pthread_join(user_interaction_thread, NULL) != 0) {
+                printf("Error: Cannot join thread\n");
+                exit(4);
+            }
+            printf("thread cancel point\n");
+            sleep(3);
+        }
+        pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
+
         printf("Result: ");
         if (fail) {
             printf("Fail ( f: ");
-            print_status_info(f_status, f_soft_fail_tries);
+            print_func_res_info(f_status, f, f_soft_fail_tries);
             printf(", g: ");
-            print_status_info(g_status, g_soft_fail_tries);
+            print_func_res_info(g_status, g, g_soft_fail_tries);
             printf(" )\n\n");
         }
         else {
@@ -237,9 +271,9 @@ int main() {
     else {
         printf("Canceled by user\n");
         printf("f: ");
-        print_status_info(f_status, f_soft_fail_tries);
+        print_func_res_info(f_status, f, f_soft_fail_tries);
         printf("\ng: ");
-        print_status_info(g_status, g_soft_fail_tries);
+        print_func_res_info(g_status, g, g_soft_fail_tries);
         printf("\n\n");
     }
 

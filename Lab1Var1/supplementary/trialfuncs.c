@@ -57,7 +57,7 @@ bool index_inside_bounds(unsigned int index, unsigned int size) {
 	compfunc_status_t trial_ ## name ## _ ## op(int x, TYPE(op) *valuep) { \
         if (x == 1) {                      \
             while(true) {                  \
-                                               \
+                        \
             }\
         }\
         if (x == 2) {                      \

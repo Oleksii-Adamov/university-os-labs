@@ -19,4 +19,8 @@ poll.h
 -
 pthread.h
 -
+signal.h
+-
+sys/wait.h
+-
 
