@@ -96,7 +96,6 @@ char* print_status_info(enum _compfunc_status status, unsigned int soft_fail_tri
 
 bool gl_user_dialog_active = false;
 bool gl_interrupted_by_user = false;
-pthread_rwlock_t gl_user_dialog_active_rwlock;
 pthread_rwlock_t gl_interrupted_by_user_rwlock;
 
 bool is_interrupted_by_user() {
@@ -105,15 +104,6 @@ bool is_interrupted_by_user() {
     bool ret = gl_interrupted_by_user;
     // unlocking read lock
     pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
-    return ret;
-}
-
-bool is_user_dialog_active() {
-    // locking read lock
-    pthread_rwlock_rdlock(&gl_user_dialog_active_rwlock);
-    bool ret = gl_user_dialog_active;
-    // unlocking read lock
-    pthread_rwlock_unlock(&gl_user_dialog_active_rwlock);
     return ret;
 }
 
@@ -126,7 +116,7 @@ void* user_interaction() {
     pfd.events = POLLIN;
     while (!is_interrupted_by_user()) {
         int poll_ret;
-        if (is_user_dialog_active()) {
+        if (gl_user_dialog_active) {
             poll_ret = poll(&pfd, 1, USER_DIALOG_DURATION_MSEC);
         }
         else {
@@ -142,9 +132,8 @@ void* user_interaction() {
         }
         if (poll_ret > 0) {
             read(pfd.fd, buf, sizeof(char) * READ_BUFF_FROM_COMSOLE_SIZE);
-            // locking write locks
+            // locking write lock
             pthread_rwlock_wrlock(&gl_interrupted_by_user_rwlock);
-            pthread_rwlock_wrlock(&gl_user_dialog_active_rwlock);
             if (gl_user_dialog_active && buf[0] == 'y' && buf[1] == '\n') {
                 gl_user_dialog_active = false;
                 gl_interrupted_by_user = true;
@@ -160,8 +149,7 @@ void* user_interaction() {
             else {
                 printf("Wrong command\n");
             }
-            // unlocking write locks
-            pthread_rwlock_unlock(&gl_user_dialog_active_rwlock);
+            // unlocking write lock
             pthread_rwlock_unlock(&gl_interrupted_by_user_rwlock);
         }
     }
@@ -183,8 +171,7 @@ int main() {
     int x;
     scanf("%d", &x);
 
-    // mutexes initialization
-    pthread_rwlock_init(&gl_user_dialog_active_rwlock, NULL);
+    // mutex initialization
     pthread_rwlock_init(&gl_interrupted_by_user_rwlock, NULL);
 
     // creating thread for user interaction (cancellation)
@@ -230,7 +217,7 @@ int main() {
     }
     printf("Cancellation point\n");
     sleep(3);
-    if (is_user_dialog_active()) {
+    if (gl_user_dialog_active) {
         printf("overriden by system\n");
     }
     if ((f_computed && g_computed) || fail) {
@@ -256,8 +243,7 @@ int main() {
         printf("\n\n");
     }
 
-    // destroying mutexes
-    pthread_rwlock_destroy(&gl_user_dialog_active_rwlock);
+    // destroying mutex
     pthread_rwlock_destroy(&gl_interrupted_by_user_rwlock);
 
     return 0;
