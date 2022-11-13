@@ -1,0 +1,9 @@
+main.Scheduling Type: Interactive
+main.Scheduling Name: Shortest process next
+Simulation Run Time: 5000
+Mean: 1100
+Standard Deviation: 510
+main.Process #	CPU Time	IO Blocking	CPU Completed	CPU Blocked
+0		1405 (ms)	100 (ms)	5000 (ms)	49 times
+1		1877 (ms)	500 (ms)	0 (ms)		0 times
+2		1877 (ms)	30 (ms)		0 (ms)		0 times
