@@ -1,10 +1,10 @@
-DateTime: 2022-11-14T10:15:47.530004
+DateTime: 2022-11-14T16:30:11.051822600
 main.Scheduling Type: Interactive
 main.Scheduling Name: Shortest process next
-Simulation Run Time: 5000
+Simulation Run Time: 2037
 Mean: 1100
 Standard Deviation: 510
 main.Process #	CPU Time	IO Blocking	CPU Completed	CPU Blocked
-0		1416 (ms)	100 (ms)	5000 (ms)	49 times
-1		1416 (ms)	500 (ms)	0 (ms)		0 times
-2		1416 (ms)	30 (ms)		0 (ms)		0 times
+0		1121 (ms)	100 (ms)	1121 (ms)	11 times
+1		458 (ms)	500 (ms)	458 (ms)	0 times
+2		458 (ms)	30 (ms)		458 (ms)	15 times
