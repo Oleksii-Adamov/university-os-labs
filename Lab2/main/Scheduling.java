@@ -8,6 +8,8 @@ package main;// This file contains the main() function for the main.Scheduling
 // Created by Alexander Reeder, 2001 January 06
 
 import java.io.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 import main.Common;
@@ -121,6 +123,7 @@ public class Scheduling {
     try {
       //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
       PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
+      out.println("DateTime: " + LocalDateTime.now());
       out.println("main.Scheduling Type: " + result.schedulingType);
       out.println("main.Scheduling Name: " + result.schedulingName);
       out.println("Simulation Run Time: " + result.compuTime);

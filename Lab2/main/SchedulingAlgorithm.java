@@ -17,8 +17,8 @@ public class SchedulingAlgorithm {
   public static Results Run(int runtime, Vector processVector, Results result) {
     int i = 0;
     int comptime = 0;
-    int currentProcess = 0;
-    int previousProcess = 0;
+    ProcessTimeEstimate currentProcess;
+    ProcessTimeEstimate previousProcess;
     int size = processVector.size();
     int completed = 0;
     int curProcessTime = 0;
@@ -32,40 +32,47 @@ public class SchedulingAlgorithm {
         // initialazing every process with zero time estimate, and picking currentProcess
         PriorityQueue<ProcessTimeEstimate> processesTimeEstimates = new PriorityQueue<>(
                 Comparator.comparingDouble((ProcessTimeEstimate processTimeEstimate) -> processTimeEstimate.timeEstimate));
-        for (int processIndex = 0; i < size; i++) {
+        for (int processIndex = 0; processIndex < size; processIndex++) {
           processesTimeEstimates.add(new ProcessTimeEstimate(processIndex, 0));
         }
-        ProcessTimeEstimate currentProcessTimeEstimate = Objects.requireNonNull(processesTimeEstimates.poll());
+        currentProcess = Objects.requireNonNull(processesTimeEstimates.poll());
 
         //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
         //OutputStream out = new FileOutputStream(resultsFile);
         PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
-        sProcess process = (sProcess) processVector.elementAt(currentProcessTimeEstimate.processIndex);
-        out.println("main.Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+        sProcess process = (sProcess) processVector.elementAt(currentProcess.processIndex);
+        out.println("main.Process: " + currentProcess.processIndex + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
         while (comptime < runtime) {
           if (process.cpudone == process.cputime) {
             completed++;
-            out.println("main.Process: " + currentProcess + " completed... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+            out.println("main.Process: " + currentProcess.processIndex + " completed... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
             if (completed == size) {
               result.compuTime = comptime;
               out.close();
               return result;
             }
             // choose process with minimum time estimate
-            currentProcessTimeEstimate = Objects.requireNonNull(processesTimeEstimates.poll());
-            process = (sProcess) processVector.elementAt(currentProcessTimeEstimate.processIndex);
-            out.println("main.Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+            curProcessTime = 0;
+            currentProcess = Objects.requireNonNull(processesTimeEstimates.poll());
+            process = (sProcess) processVector.elementAt(currentProcess.processIndex);
+            out.println("main.Process: " + currentProcess.processIndex + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
           }
           if (process.ioblocking == process.ionext) {
-            out.println("main.Process: " + currentProcess + " I/O blocked... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+            out.println("main.Process: " + currentProcess.processIndex + " I/O blocked... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
             process.numblocked++;
             process.ionext = 0;
-            currentProcessTimeEstimate.timeEstimate = coef * currentProcessTimeEstimate.timeEstimate +  (1 - coef) * curProcessTime;
-            processesTimeEstimates.add(currentProcessTimeEstimate);
+            // update estimate
+            currentProcess.timeEstimate = coef * currentProcess.timeEstimate +  (1 - coef) * curProcessTime;
             curProcessTime = 0;
-            currentProcessTimeEstimate = Objects.requireNonNull(processesTimeEstimates.poll());
-            process = (sProcess) processVector.elementAt(currentProcess);
-            out.println("main.Process: " + currentProcess + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
+            if (!processesTimeEstimates.isEmpty()) {
+              // choose process with minimum time estimate
+              previousProcess = currentProcess;
+              currentProcess = Objects.requireNonNull(processesTimeEstimates.poll());
+              process = (sProcess) processVector.elementAt(currentProcess.processIndex);
+              // add previous process to scheduling
+              processesTimeEstimates.add(previousProcess);
+            }
+            out.println("main.Process: " + currentProcess.processIndex + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.cpudone + ")");
           }
           process.cpudone++;
           if (process.ioblocking > 0) {
