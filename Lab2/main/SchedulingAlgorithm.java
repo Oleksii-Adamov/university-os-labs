@@ -62,6 +62,7 @@ public class SchedulingAlgorithm {
           if (process.cpudone == process.cputime) {
             out.println("main.Process: " + currentProcess.processIndex + " completed... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.numblocked + ")");
             curProcessTime = 0;
+            // make null so it won't be added to scheduling
             currentProcess = null;
             sheduleNextProcess = true;
           }
