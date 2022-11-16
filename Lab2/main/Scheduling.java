@@ -21,9 +21,22 @@ public class Scheduling {
   private static int meanDev = 1000;
   private static int standardDev = 100;
   private static int runtime = 1000;
+  private static double agingCoef = 0.5;
   private static Vector processVector = new Vector();
   private static Results result = new Results("null","null",0);
   private static String resultsFile = "Summary-Results";
+
+  private static void parseAgingCoef(String string) {
+    try {
+      agingCoef = Double.parseDouble(string.trim());
+    } catch (NumberFormatException nfe) {
+      System.out.println("NumberFormatException: " + nfe.getMessage());
+    }
+    if (agingCoef < 0 || agingCoef > 1) {
+      System.out.println("Invalid agingCoef: must be within [0,1]. Using default agingCoef = 0.5");
+      agingCoef = 0.5;
+    }
+  }
 
   private static void Init(String file) {
     File f = new File(file);
@@ -68,6 +81,11 @@ public class Scheduling {
           StringTokenizer st = new StringTokenizer(line);
           st.nextToken();
           runtime = Common.s2i(st.nextToken());
+        }
+        if (line.startsWith("agingCoef")) {
+          StringTokenizer st = new StringTokenizer(line);
+          st.nextToken();
+          parseAgingCoef(st.nextToken());
         }
       }
       in.close();
@@ -119,7 +137,7 @@ public class Scheduling {
         i++;
       }
     }
-    result = SchedulingAlgorithm.Run(runtime, processVector, result);    
+    result = SchedulingAlgorithm.Run(runtime, processVector, result, agingCoef);
     try {
       //BufferedWriter out = new BufferedWriter(new FileWriter(resultsFile));
       PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
