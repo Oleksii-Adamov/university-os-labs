@@ -1,0 +1,33 @@
+
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ôö–òúÿÿÿÿ
+f	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Íû›
+k	java:S117"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ÜŸßúÿÿÿÿ
+k	java:S117!"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘á¿ñùÿÿÿÿ
+k	java:S117!"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘á¿ñùÿÿÿÿ
+f	java:S117)"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÏÊÍ
+f	java:S117)"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÏÊÍ
+k	java:S1171"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨Êµõùÿÿÿÿ
+k	java:S1171"QRename this local variable to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨Êµõùÿÿÿÿ
+U
+java:S1118":Add a private constructor to hide the implicit public one.(âŠ°ÿÿÿÿÿ
+Z
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(ˆØ²
+S	java:S106"9Replace this use of System.out or System.err by a logger.(Ê½òˆüÿÿÿÿ
+h	java:S100"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¹£­ùÿÿÿÿ
+`
+java:S1124"EReorder the modifiers to comply with the Java Language Specification.(¹£­ùÿÿÿÿ
+h	java:S100!"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(‘á¿ñùÿÿÿÿ
+`
+java:S1124!"EReorder the modifiers to comply with the Java Language Specification.(‘á¿ñùÿÿÿÿ
+W
+java:S1126""AReplace this if-then-else statement by a single return statement.(‡Õ×—
+c	java:S100)"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ŒÏÊÍ
+[
+java:S1124)"EReorder the modifiers to comply with the Java Language Specification.(ŒÏÊÍ
+\
+java:S1126*"AReplace this if-then-else statement by a single return statement.(Çê‰ªøÿÿÿÿ
+h	java:S1001"NRename this method name to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨Êµõùÿÿÿÿ
+`
+java:S11241"EReorder the modifiers to comply with the Java Language Specification.(¨Êµõùÿÿÿÿ
+\
+java:S11262"AReplace this if-then-else statement by a single return statement.(ş½ƒşÿÿÿÿ

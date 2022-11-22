@@ -1,10 +1,10 @@
-DateTime: 2022-11-16T19:41:06.651770300
+DateTime: 2022-11-22T21:04:41.100639500
 main.Scheduling Type: Interactive (Nonpreemptive)
 main.Scheduling Name: Shortest process next, agingCoef = 0.5
-Simulation Run Time: 4006
-Mean: 1100
-Standard Deviation: 510
+Simulation Run Time: 4995
+Mean: 1500
+Standard Deviation: 500
 main.Process #	CPU Time	IO Blocking	CPU Completed	CPU Blocked
-0		1274 (ms)	100 (ms)	1274 (ms)	12 times
-1		1274 (ms)	500 (ms)	1274 (ms)	2 times
-2		1458 (ms)	30 (ms)		1458 (ms)	48 times
+0		1665 (ms)	100 (ms)	1665 (ms)	16 times
+1		1665 (ms)	500 (ms)	1665 (ms)	3 times
+2		1665 (ms)	30 (ms)		1665 (ms)	43 times

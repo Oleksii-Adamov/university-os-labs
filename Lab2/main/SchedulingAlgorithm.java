@@ -2,10 +2,6 @@ package main;// Run() is called from main.Scheduling.main() and is where
 // the scheduling algorithm written by the user resides.
 // User modification should occur within the Run() function.
 
-import main.ProcessTimeEstimate;
-import main.Results;
-import main.sProcess;
-
 import java.util.Comparator;
 import java.util.Objects;
 import java.util.PriorityQueue;
@@ -14,12 +10,17 @@ import java.io.*;
 
 public class SchedulingAlgorithm {
 
-  public static Results Run(int runtime, Vector processVector, Results result, double agingCoef) {
-    int comptime = 0;
-    ProcessTimeEstimate currentProcess = null;
-    ProcessTimeEstimate previousProcess = null;
-    sProcess process = null;
-    int size = processVector.size();
+  private SchedulingAlgorithm() {}
+
+  public static String processActionInfo(sProcess process, String action) {
+    return "main.Process: " + process.id + " " + action + " (" + process.processInfo() + ")";
+  }
+
+  public static Results run(int runtime, Vector<sProcess> processVector, Results result, double agingCoef) {
+    int curTime = 0;
+    sProcess curProcess = null;
+    int numProcesses = processVector.size();
+    int numCompletedProcesses = 0;
     int curProcessTime = 0;
     boolean sheduleNextProcess = true;
     String resultsFile = "Summary-Processes";
@@ -28,59 +29,67 @@ public class SchedulingAlgorithm {
 
     try {
         // initialazing every process with zero time estimate
-        PriorityQueue<ProcessTimeEstimate> processesTimeEstimates = new PriorityQueue<>(
-                Comparator.comparingDouble((ProcessTimeEstimate processTimeEstimate) -> processTimeEstimate.timeEstimate));
-        for (int processIndex = 0; processIndex < size; processIndex++) {
-          processesTimeEstimates.add(new ProcessTimeEstimate(processIndex, 0));
-        }
+        PriorityQueue<sProcess> processesHeap = new PriorityQueue<>(
+                Comparator.comparingDouble((sProcess process) -> process.timeEstimate));
 
         PrintStream out = new PrintStream(new FileOutputStream(resultsFile));
         // runtime cycle
-        while (comptime < runtime) {
-          if (sheduleNextProcess) {
-            // if no processes left - break
-            if (processesTimeEstimates.isEmpty()) break;
-            // choose process with minimum time estimate
-            previousProcess = currentProcess;
-            currentProcess = Objects.requireNonNull(processesTimeEstimates.poll());
-            process = (sProcess) processVector.elementAt(currentProcess.processIndex);
-            // add previous process to scheduling
-            if (previousProcess != null) {
-              processesTimeEstimates.add(previousProcess);
+        while (curTime < runtime) {
+          // checking arrival and unblocking
+          for (int processIndex = 0; processIndex < numProcesses; processIndex++) {
+            boolean addToSheduling = false;
+            sProcess checkedProcess = processVector.elementAt(processIndex);
+            if (checkedProcess.arrivalTime == curTime) {
+              addToSheduling = true;
+              out.println(processActionInfo(checkedProcess, "arrived and added to scheduling"));
             }
-            sheduleNextProcess = false;
-            out.println("main.Process: " + currentProcess.processIndex + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.numblocked + ")");
+            if (checkedProcess.isBlocked && curTime - checkedProcess.lastTimeExecuted == checkedProcess.blockDuration) {
+              checkedProcess.isBlocked = false;
+              addToSheduling = true;
+              out.println(processActionInfo(checkedProcess, "unblocked and added to scheduling"));
+            }
+            if (addToSheduling) {
+              processesHeap.add(checkedProcess);
+            }
           }
+
+          // scheduling new process if needed
+          if (sheduleNextProcess && !processesHeap.isEmpty()) {
+            // choose process with minimum time estimate
+            curProcess = processesHeap.poll();
+            sheduleNextProcess = false;
+            out.println(processActionInfo(curProcess, "registered"));
+          }
+
           // process "executing"
-          process.cpudone++;
-          if (process.ioblocking > 0) {
-            process.ionext++;
+          curProcess.cpuDone++;
+          if (!curProcess.isBlocked && curProcess.runTimeBeforeBlocking > 0) {
+            curProcess.ioNext++;
           }
           curProcessTime++;
-          comptime++;
+          curTime++;
+
           // if process completed
-          if (process.cpudone == process.cputime) {
-            out.println("main.Process: " + currentProcess.processIndex + " completed... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.numblocked + ")");
+          if (curProcess.cpuDone == curProcess.cpuTime) {
+            out.println(processActionInfo(curProcess, "completed"));
+            numCompletedProcesses++;
+            if (numCompletedProcesses == numProcesses) break;
             curProcessTime = 0;
-            // make null so it won't be added to scheduling
-            currentProcess = null;
             sheduleNextProcess = true;
           }
+
           // if process blocked for I/O
-          if (process.ioblocking == process.ionext) {
-            process.numblocked++;
-            process.ionext = 0;
-            out.println("main.Process: " + currentProcess.processIndex + " I/O blocked... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.numblocked + ")");
+          if (curProcess.runTimeBeforeBlocking == curProcess.ioNext) {
+            curProcess.numBlocked++;
+            curProcess.isBlocked = true;
+            curProcess.ioNext = 0;
+            curProcess.lastTimeExecuted = curTime;
+            out.println(processActionInfo(curProcess, "I/O blocked"));
             // update estimate
-            currentProcess.timeEstimate = agingCoef * currentProcess.timeEstimate +  (1 - agingCoef) * curProcessTime;
-            //System.out.println("Process " + currentProcess.processIndex + " time estimate: " + currentProcess.timeEstimate);
+            curProcess.timeEstimate = agingCoef * curProcess.timeEstimate +  (1 - agingCoef) * curProcessTime;
+            out.println("Process " + curProcess.id + " new time estimate: " + curProcess.timeEstimate);
             curProcessTime = 0;
-            if (!processesTimeEstimates.isEmpty()) {
-              sheduleNextProcess = true;
-            }
-            else {
-              out.println("main.Process: " + currentProcess.processIndex + " registered... (" + process.cputime + " " + process.ioblocking + " " + process.cpudone + " " + process.numblocked + ")");
-            }
+            sheduleNextProcess = true;
           }
         }
         out.close();
@@ -88,7 +97,7 @@ public class SchedulingAlgorithm {
       e.printStackTrace();
       return result;
     }
-    result.compuTime = comptime;
+    result.compuTime = curTime;
     return result;
   }
 }
