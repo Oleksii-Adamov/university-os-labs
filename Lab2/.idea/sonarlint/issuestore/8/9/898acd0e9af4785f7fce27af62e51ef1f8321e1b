@@ -1,0 +1,84 @@
+
+cWeb:DoctypePresenceCheck":Insert a <!DOCTYPE> declaration to before this <html> tag.(œ÷Ãûÿÿÿÿ
+Z	Web:S5254"@Add "lang" and/or "xml:lang" attributes to this "<html>" element(œ÷Ãûÿÿÿÿ
+@	Web:S1827"+Remove this deprecated "bgcolor" attribute.(ï—Òë
+HWeb:BoldAndItalicTagsCheck"Replace this <i> tag by <em>.(àÛÆÛøÿÿÿÿ
+HWeb:BoldAndItalicTagsCheck"Replace this <i> tag by <em>.(ì¨Ë¥ùÿÿÿÿ
+TWeb:UnsupportedTagsInHtml5Check7"$Remove this deprecated "tt" element.(ã¦Åšüÿÿÿÿ
+OWeb:UnsupportedTagsInHtml5Check8"$Remove this deprecated "tt" element.(¾˜‚Ò
+NWeb:UnsupportedTagsInHtml5Check9"$Remove this deprecated "tt" element.(Ú‘«
+TWeb:UnsupportedTagsInHtml5Checki"$Remove this deprecated "tt" element.(É«ÿòÿÿÿÿÿ
+GWeb:TableWithoutCaptionCheck}" Add a description to this table.(ûŞi
+C	Web:S1827}"/Remove this deprecated "cellspacing" attribute.(ûŞi
+E	Web:S1827…"*Remove this deprecated "valign" attribute.(ŠÜÒÌûÿÿÿÿ
+UWeb:UnsupportedTagsInHtml5Check…"$Remove this deprecated "tt" element.(ŠÜÒÌûÿÿÿÿ
+E	Web:S1827†"*Remove this deprecated "valign" attribute.(ë«ºšùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck†"Replace this <i> tag by <em>.(ë«ºšùÿÿÿÿ
+@	Web:S1827‡"*Remove this deprecated "valign" attribute.(ï¦Ø 
+E	Web:S1827Œ"*Remove this deprecated "valign" attribute.(»—ã¬øÿÿÿÿ
+UWeb:UnsupportedTagsInHtml5CheckŒ"$Remove this deprecated "tt" element.(»—ã¬øÿÿÿÿ
+E	Web:S1827"*Remove this deprecated "valign" attribute.(ë«ºšùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck"Replace this <i> tag by <em>.(ë«ºšùÿÿÿÿ
+?	Web:S1827"*Remove this deprecated "valign" attribute.(İ‡¹T
+E	Web:S1827“"*Remove this deprecated "valign" attribute.(¤Úãùÿÿÿÿ
+UWeb:UnsupportedTagsInHtml5Check“"$Remove this deprecated "tt" element.(¤Úãùÿÿÿÿ
+E	Web:S1827”"*Remove this deprecated "valign" attribute.(ë«ºšùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck”"Replace this <i> tag by <em>.(ë«ºšùÿÿÿÿ
+E	Web:S1827•"*Remove this deprecated "valign" attribute.(Ù°ªÑşÿÿÿÿ
+@	Web:S1827š"*Remove this deprecated "valign" attribute.(»Ä¯¨
+PWeb:UnsupportedTagsInHtml5Checkš"$Remove this deprecated "tt" element.(»Ä¯¨
+E	Web:S1827›"*Remove this deprecated "valign" attribute.(ë«ºšùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck›"Replace this <i> tag by <em>.(ë«ºšùÿÿÿÿ
+@	Web:S1827œ"*Remove this deprecated "valign" attribute.(Ø¬Ò½
+UWeb:UnsupportedTagsInHtml5Check"$Remove this deprecated "tt" element.(úµ¡™ıÿÿÿÿ
+UWeb:UnsupportedTagsInHtml5CheckŸ"$Remove this deprecated "tt" element.(æ¦´öıÿÿÿÿ
+@	Web:S1827£"*Remove this deprecated "valign" attribute.(Õì§ÿ
+PWeb:UnsupportedTagsInHtml5Check£"$Remove this deprecated "tt" element.(Õì§ÿ
+E	Web:S1827¤"*Remove this deprecated "valign" attribute.(ë«ºšùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck¤"Replace this <i> tag by <em>.(ë«ºšùÿÿÿÿ
+@	Web:S1827¥"*Remove this deprecated "valign" attribute.(âË¹
+IWeb:TableWithoutCaptionCheckË" Add a description to this table.(Ã˜€Ê
+?	Web:S1827Ò"*Remove this deprecated "valign" attribute.(ˆ¶ğt
+E	Web:S1827Ó"*Remove this deprecated "valign" attribute.(„Üõ›üÿÿÿÿ
+E	Web:S1827Ù"*Remove this deprecated "valign" attribute.(Ğ¢á‰øÿÿÿÿ
+@	Web:S1827Ú"*Remove this deprecated "valign" attribute.(ë¾¾»
+@	Web:S1827à"*Remove this deprecated "valign" attribute.(×—É‰
+E	Web:S1827á"*Remove this deprecated "valign" attribute.(‚‰Ğ¸úÿÿÿÿ
+@	Web:S1827ç"*Remove this deprecated "valign" attribute.(±ÚÉß
+E	Web:S1827è"*Remove this deprecated "valign" attribute.(ë±›şÿÿÿÿ
+E	Web:S1827í"*Remove this deprecated "valign" attribute.(°¨¿Àüÿÿÿÿ
+E	Web:S1827î"*Remove this deprecated "valign" attribute.(¨—ë¸ıÿÿÿÿ
+@	Web:S1827ô"*Remove this deprecated "valign" attribute.( —›Û
+E	Web:S1827õ"*Remove this deprecated "valign" attribute.(»Û¡ıûÿÿÿÿ
+E	Web:S1827ü"*Remove this deprecated "valign" attribute.(ğ€æĞıÿÿÿÿ
+@	Web:S1827ı"*Remove this deprecated "valign" attribute.(úûİ—
+E	Web:S1827„"*Remove this deprecated "valign" attribute.(§ Àüøÿÿÿÿ
+E	Web:S1827…"*Remove this deprecated "valign" attribute.(„»Éùÿÿÿÿ
+E	Web:S1827‹"*Remove this deprecated "valign" attribute.(ñ¨Æ«øÿÿÿÿ
+E	Web:S1827Œ"*Remove this deprecated "valign" attribute.(ØÈ€®úÿÿÿÿ
+E	Web:S1827“"*Remove this deprecated "valign" attribute.(ÆˆÀİÿÿÿÿÿ
+E	Web:S1827”"*Remove this deprecated "valign" attribute.(ÁÙÌùÿÿÿÿ
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+DWeb:BoldAndItalicTagsCheckµ"Replace this <i> tag by <em>.(Ù²“Î
+IWeb:TableWithoutCaptionCheck»" Add a description to this table.(Ã˜€Ê
+@	Web:S1827Â"*Remove this deprecated "valign" attribute.(àÍ²¨
+DWeb:BoldAndItalicTagsCheckÂ"Replace this <i> tag by <em>.(àÍ²¨
+?	Web:S1827Ã"*Remove this deprecated "valign" attribute.(ïÔƒc
+E	Web:S1827É"*Remove this deprecated "valign" attribute.(ë°ÅÀÿÿÿÿÿ
+IWeb:BoldAndItalicTagsCheckÉ"Replace this <i> tag by <em>.(ë°ÅÀÿÿÿÿÿ
+E	Web:S1827Ê"*Remove this deprecated "valign" attribute.(Ì¸²‚şÿÿÿÿ
+E	Web:S1827Õ"*Remove this deprecated "valign" attribute.(±‘œÔşÿÿÿÿ
+IWeb:BoldAndItalicTagsCheckÕ"Replace this <i> tag by <em>.(±‘œÔşÿÿÿÿ
+@	Web:S1827Ö"*Remove this deprecated "valign" attribute.(ßƒ’Á
+E	Web:S1827Ş"*Remove this deprecated "valign" attribute.(›’‚ÿÿÿÿÿ
+IWeb:BoldAndItalicTagsCheckŞ"Replace this <i> tag by <em>.(›’‚ÿÿÿÿÿ
+@	Web:S1827ß"*Remove this deprecated "valign" attribute.(¿ì©
+@	Web:S1827å"*Remove this deprecated "valign" attribute.(ˆ©š­
+DWeb:BoldAndItalicTagsCheckå"Replace this <i> tag by <em>.(ˆ©š­
+E	Web:S1827æ"*Remove this deprecated "valign" attribute.(œ¡µ‚üÿÿÿÿ
+IWeb:BoldAndItalicTagsCheckº"Replace this <i> tag by <em>.(ì¨Ë¥ùÿÿÿÿ
+IWeb:BoldAndItalicTagsCheck¼"Replace this <i> tag by <em>.(ïİø®üÿÿÿÿ

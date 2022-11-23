@@ -1,113 +1,114 @@
-main.Process: 1 arrived and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=0, numBlocked=0, blockDuration=10, arrivalTime=0, timeEstimate=0.0)
-main.Process: 2 arrived and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=0, numBlocked=0, blockDuration=5, arrivalTime=0, timeEstimate=0.0)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=0, numBlocked=0, blockDuration=10, arrivalTime=0, timeEstimate=0.0)
-main.Process: 3 arrived and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=0, numBlocked=0, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=0, timeEstimate=0.0)
+at 0ms waiting for any process to get ready
+at 1ms waiting for any process to get ready
+at 2ms waiting for any process to get ready
+at 3ms waiting for any process to get ready
+at 4ms waiting for any process to get ready
+at 5ms waiting for any process to get ready
+at 6ms waiting for any process to get ready
+at 7ms waiting for any process to get ready
+at 8ms waiting for any process to get ready
+at 9ms waiting for any process to get ready
+at 10ms Process: 1 arrived and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=0, numBlocked=0, blockDuration=10, arrivalTime=10, timeEstimate=0.0)
+at 10ms Process: 2 arrived and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=0, numBlocked=0, blockDuration=5, arrivalTime=10, timeEstimate=0.0)
+at 10ms Process: 3 arrived and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=0, numBlocked=0, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
+at 10ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=0, numBlocked=0, blockDuration=10, arrivalTime=10, timeEstimate=0.0)
+at 30ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=10, timeEstimate=0.0)
 Process 1 new time estimate: 10.0
-main.Process: 2 registered (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=0, numBlocked=0, blockDuration=5, arrivalTime=0, timeEstimate=0.0)
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=0, timeEstimate=10.0)
-main.Process: 2 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=0, timeEstimate=0.0)
-Process 2 new time estimate: 25.0
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=0, numBlocked=0, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
-main.Process: 2 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=0, timeEstimate=25.0)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
+at 30ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=0, numBlocked=0, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
+at 40ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=0.0)
 Process 3 new time estimate: 5.0
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=0, timeEstimate=10.0)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=0, timeEstimate=10.0)
-Process 1 new time estimate: 15.0
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
+at 40ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=10, timeEstimate=10.0)
+at 40ms Process: 2 registered (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=0, numBlocked=0, blockDuration=5, arrivalTime=10, timeEstimate=0.0)
+at 55ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
+at 90ms Process: 2 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=10, timeEstimate=0.0)
+Process 2 new time estimate: 25.0
+at 90ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=10, numBlocked=1, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
+at 95ms Process: 2 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=10, timeEstimate=25.0)
+at 100ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=5.0)
 Process 3 new time estimate: 7.5
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=0, timeEstimate=15.0)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=0, timeEstimate=15.0)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=0, timeEstimate=15.0)
-Process 1 new time estimate: 17.5
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
+at 100ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=20, numBlocked=1, blockDuration=10, arrivalTime=10, timeEstimate=10.0)
+at 115ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
+at 120ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=10, timeEstimate=10.0)
+Process 1 new time estimate: 15.0
+at 120ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=20, numBlocked=2, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
+at 130ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=7.5)
 Process 3 new time estimate: 8.75
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=0, timeEstimate=17.5)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=0, timeEstimate=17.5)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=0, timeEstimate=17.5)
-Process 1 new time estimate: 18.75
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
+at 130ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=10, timeEstimate=15.0)
+at 130ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=40, numBlocked=2, blockDuration=10, arrivalTime=10, timeEstimate=15.0)
+at 145ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
+at 150ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=10, timeEstimate=15.0)
+Process 1 new time estimate: 17.5
+at 150ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=30, numBlocked=3, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
+at 160ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=8.75)
 Process 3 new time estimate: 9.375
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=0, timeEstimate=18.75)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=0, timeEstimate=18.75)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=0, timeEstimate=18.75)
-Process 1 new time estimate: 19.375
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
+at 160ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=10, timeEstimate=17.5)
+at 160ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=60, numBlocked=3, blockDuration=10, arrivalTime=10, timeEstimate=17.5)
+at 175ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
+at 180ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=10, timeEstimate=17.5)
+Process 1 new time estimate: 18.75
+at 180ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=40, numBlocked=4, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
+at 190ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.375)
 Process 3 new time estimate: 9.6875
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=0, timeEstimate=19.375)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=0, timeEstimate=19.375)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=0, timeEstimate=19.375)
-Process 1 new time estimate: 19.6875
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
+at 190ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=10, timeEstimate=18.75)
+at 190ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=80, numBlocked=4, blockDuration=10, arrivalTime=10, timeEstimate=18.75)
+at 205ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
+at 210ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=10, timeEstimate=18.75)
+Process 1 new time estimate: 19.375
+at 210ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=50, numBlocked=5, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
+at 220ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.6875)
 Process 3 new time estimate: 9.84375
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=0, timeEstimate=19.6875)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=0, timeEstimate=19.6875)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=140, numBlocked=7, blockDuration=10, arrivalTime=0, timeEstimate=19.6875)
-Process 1 new time estimate: 19.84375
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
+at 220ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=10, timeEstimate=19.375)
+at 220ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=100, numBlocked=5, blockDuration=10, arrivalTime=10, timeEstimate=19.375)
+at 235ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
+at 240ms Process: 1 I/O blocked (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=10, timeEstimate=19.375)
+Process 1 new time estimate: 19.6875
+at 240ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=60, numBlocked=6, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
+at 250ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.84375)
 Process 3 new time estimate: 9.921875
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=140, numBlocked=7, blockDuration=10, arrivalTime=0, timeEstimate=19.84375)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=140, numBlocked=7, blockDuration=10, arrivalTime=0, timeEstimate=19.84375)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
-main.Process: 1 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=160, numBlocked=8, blockDuration=10, arrivalTime=0, timeEstimate=19.84375)
-Process 1 new time estimate: 19.921875
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
+at 250ms Process: 1 unblocked and added to scheduling (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=10, timeEstimate=19.6875)
+at 250ms Process: 1 registered (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=120, numBlocked=6, blockDuration=10, arrivalTime=10, timeEstimate=19.6875)
+at 265ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
+at 270ms Process: 1 completed (Process info: cpuTime=140, runTimeBeforeBlocking=20, cpuDone=140, numBlocked=6, blockDuration=10, arrivalTime=10, timeEstimate=19.6875)
+at 270ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=70, numBlocked=7, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
+at 280ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.921875)
 Process 3 new time estimate: 9.9609375
-main.Process: 1 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=160, numBlocked=8, blockDuration=10, arrivalTime=0, timeEstimate=19.921875)
-main.Process: 1 registered (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=160, numBlocked=8, blockDuration=10, arrivalTime=0, timeEstimate=19.921875)
-main.Process: 1 completed (Process info: cpuTime=175, runTimeBeforeBlocking=20, cpuDone=175, numBlocked=8, blockDuration=10, arrivalTime=0, timeEstimate=19.921875)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
-Process 3 new time estimate: 9.98046875
-main.Process: 2 registered (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=0, timeEstimate=25.0)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
-main.Process: 2 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=0, timeEstimate=25.0)
+at 280ms Process: 2 registered (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=50, numBlocked=1, blockDuration=5, arrivalTime=10, timeEstimate=25.0)
+at 295ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
+at 330ms Process: 2 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=10, timeEstimate=25.0)
 Process 2 new time estimate: 37.5
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
-main.Process: 2 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=0, timeEstimate=37.5)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
-Process 3 new time estimate: 9.990234375
-main.Process: 2 registered (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=0, timeEstimate=37.5)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
-main.Process: 2 I/O blocked (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=0, timeEstimate=37.5)
+at 330ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=80, numBlocked=8, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
+at 335ms Process: 2 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=10, timeEstimate=37.5)
+at 340ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.9609375)
+Process 3 new time estimate: 9.98046875
+at 340ms Process: 2 registered (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=100, numBlocked=2, blockDuration=5, arrivalTime=10, timeEstimate=37.5)
+at 355ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
+at 390ms Process: 2 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=10, timeEstimate=37.5)
 Process 2 new time estimate: 43.75
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
-main.Process: 2 unblocked and added to scheduling (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=0, timeEstimate=43.75)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=110, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
+at 390ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=90, numBlocked=9, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
+at 395ms Process: 2 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=10, timeEstimate=43.75)
+at 400ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.98046875)
+Process 3 new time estimate: 9.990234375
+at 400ms Process: 2 registered (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=10, timeEstimate=43.75)
+at 404ms Process: 2 completed (Process info: cpuTime=154, runTimeBeforeBlocking=50, cpuDone=154, numBlocked=3, blockDuration=5, arrivalTime=10, timeEstimate=43.75)
+at 404ms waiting for any process to get ready
+at 405ms waiting for any process to get ready
+at 406ms waiting for any process to get ready
+at 407ms waiting for any process to get ready
+at 408ms waiting for any process to get ready
+at 409ms waiting for any process to get ready
+at 410ms waiting for any process to get ready
+at 411ms waiting for any process to get ready
+at 412ms waiting for any process to get ready
+at 413ms waiting for any process to get ready
+at 414ms waiting for any process to get ready
+at 415ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
+at 415ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=100, numBlocked=10, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
+at 425ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=110, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.990234375)
 Process 3 new time estimate: 9.9951171875
-main.Process: 2 registered (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=150, numBlocked=3, blockDuration=5, arrivalTime=0, timeEstimate=43.75)
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=110, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
-main.Process: 2 completed (Process info: cpuTime=175, runTimeBeforeBlocking=50, cpuDone=175, numBlocked=3, blockDuration=5, arrivalTime=0, timeEstimate=43.75)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=110, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=120, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
-Process 3 new time estimate: 9.99755859375
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=135, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=9.99755859375)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=135, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=9.99755859375)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=145, numBlocked=13, blockDuration=15, arrivalTime=10, timeEstimate=9.99755859375)
-Process 3 new time estimate: 17.498779296875
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=160, numBlocked=13, blockDuration=15, arrivalTime=10, timeEstimate=17.498779296875)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=160, numBlocked=13, blockDuration=15, arrivalTime=10, timeEstimate=17.498779296875)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=170, numBlocked=14, blockDuration=15, arrivalTime=10, timeEstimate=17.498779296875)
-Process 3 new time estimate: 21.2493896484375
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=185, numBlocked=14, blockDuration=15, arrivalTime=10, timeEstimate=21.2493896484375)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=185, numBlocked=14, blockDuration=15, arrivalTime=10, timeEstimate=21.2493896484375)
-main.Process: 3 I/O blocked (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=195, numBlocked=15, blockDuration=15, arrivalTime=10, timeEstimate=21.2493896484375)
-Process 3 new time estimate: 23.12469482421875
-main.Process: 3 unblocked and added to scheduling (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=210, numBlocked=15, blockDuration=15, arrivalTime=10, timeEstimate=23.12469482421875)
-main.Process: 3 registered (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=210, numBlocked=15, blockDuration=15, arrivalTime=10, timeEstimate=23.12469482421875)
-main.Process: 3 completed (Process info: cpuTime=215, runTimeBeforeBlocking=10, cpuDone=215, numBlocked=15, blockDuration=15, arrivalTime=10, timeEstimate=23.12469482421875)
+at 440ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=125, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
+at 440ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=125, numBlocked=11, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
+at 450ms Process: 3 I/O blocked (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=135, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=9.9951171875)
+Process 3 new time estimate: 17.49755859375
+at 465ms Process: 3 unblocked and added to scheduling (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=150, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=17.49755859375)
+at 465ms Process: 3 registered (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=150, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=17.49755859375)
+at 469ms Process: 3 completed (Process info: cpuTime=154, runTimeBeforeBlocking=10, cpuDone=154, numBlocked=12, blockDuration=15, arrivalTime=10, timeEstimate=17.49755859375)

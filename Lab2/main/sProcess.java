@@ -15,7 +15,7 @@ public class sProcess {
   public int arrivalTime;
 
   public int lastTimeExecuted = -1;
-
+  // initializing every process with zero time estimate
   public double timeEstimate = 0;
 
   public sProcess(int id, int cpuTime, int runTimeBeforeBlocking, int blockDuration, int arrivalTime) {
